@@ -1,0 +1,48 @@
+run:
+  timeout: 5m
+  tests: true
+  concurrency: 4
+
+linters-settings:
+  staticcheck:
+    checks:
+      -SA*
+      -S*
+  govet:
+    check-shadowing: true
+  gocyclo:
+    min-complexity: 10
+  golint:
+    min-confidence: 0.8
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+  revive:
+    ignore-generated: true
+
+linters:
+  enable-all: true
+  disable:
+    - dupl
+    - depguard
+    - gci
+    - varnamelen
+    - goimports
+
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+output:
+  format: tab
+  color: always
+
+checks:
+  structcheck:
+    skip-tests: false
+  unparam:
+    check-exported: true
+
+exclude-rules:
+  - text: "Use of package"
