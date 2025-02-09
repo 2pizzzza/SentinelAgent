@@ -8,10 +8,9 @@ import (
 	"time"
 
 	"github.com/2pizzzza/sentinetAgent/internal/collector/metrics"
+	"github.com/2pizzzza/sentinetAgent/internal/config"
 	"github.com/2pizzzza/sentinetAgent/internal/core"
 	"github.com/2pizzzza/sentinetAgent/pkg/logger"
-
-	"github.com/2pizzzza/sentinetAgent/internal/config"
 )
 
 func main() {
