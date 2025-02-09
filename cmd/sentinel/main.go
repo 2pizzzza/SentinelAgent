@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -10,8 +9,6 @@ import (
 
 	"github.com/2pizzzza/sentinetAgent/internal/collector/metrics"
 	"github.com/2pizzzza/sentinetAgent/internal/core"
-	"github.com/2pizzzza/sentinetAgent/internal/storage/postgres"
-	"github.com/2pizzzza/sentinetAgent/internal/storage/redis"
 	"github.com/2pizzzza/sentinetAgent/pkg/logger"
 
 	"github.com/2pizzzza/sentinetAgent/internal/config"
@@ -24,22 +21,14 @@ func main() {
 		panic(err)
 	}
 
-	_, _ = context.WithCancel(context.Background())
 	log := logger.New(cnf.Env)
 
 	application := core.New(log, *cnf)
 
-	_, err = redis.New(cnf.Redis.Host, cnf.Redis.Port, cnf.Redis.Password)
-	if err != nil {
-		panic(err)
-	}
-
-	_, err = postgres.New(cnf)
-	if err != nil {
-		panic(err)
-	}
-
 	linuxMetrics, err := metrics.NewLinuxMetrics()
+	if err != nil {
+		panic(err)
+	}
 
 	metricsCh := make(chan *metrics.Metrics)
 
