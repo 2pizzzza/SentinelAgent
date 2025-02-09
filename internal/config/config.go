@@ -19,7 +19,12 @@ type Config struct {
 		Password string `yaml:"password"`
 		DBName   string `yaml:"dbname"`
 	} `yaml:"database"`
-	Env string `yaml:"env"`
+	Env   string `yaml:"env"`
+	Redis struct {
+		Host     string `yaml:"host"`
+		Port     int    `yaml:"port"`
+		Password string `yaml:"password"`
+	} `yaml:"redis"`
 }
 
 func New(path string) (*Config, error) {

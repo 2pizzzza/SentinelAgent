@@ -80,21 +80,6 @@ func (m *LinuxMetrics) CollectMemoryStats() (*procfs.Meminfo, error) {
 	return &meminfo, nil
 }
 
-func (m *LinuxMetrics) StartCollecting(interval time.Duration) {
-	ticker := time.NewTicker(interval)
-	defer ticker.Stop()
-
-	for range ticker.C {
-		metrics, err := m.Collect()
-		if err != nil {
-			fmt.Println("Error collecting metrics:", err)
-			continue
-		}
-
-		fmt.Printf("Collected Metrics: %+v\n", metrics)
-	}
-}
-
 func (m *LinuxMetrics) CollectDiskStats(path string) (disk DiskStatus) {
 	fs := syscall.Statfs_t{}
 	err := syscall.Statfs(path, &fs)
@@ -105,4 +90,18 @@ func (m *LinuxMetrics) CollectDiskStats(path string) (disk DiskStatus) {
 	disk.Free = fs.Bfree * uint64(fs.Bsize)
 	disk.Used = disk.All - disk.Free
 	return
+}
+
+func (m *LinuxMetrics) StartCollecting(interval time.Duration, metricsCh chan *Metrics) {
+	ticker := time.NewTicker(interval)
+	defer ticker.Stop()
+
+	for range ticker.C {
+		metrics, err := m.Collect()
+		if err != nil {
+			fmt.Println("Error collecting metrics:", err)
+			continue
+		}
+		metricsCh <- metrics
+	}
 }
