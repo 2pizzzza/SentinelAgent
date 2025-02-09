@@ -2,6 +2,7 @@ package metrics
 
 import (
 	"fmt"
+	"syscall"
 	"time"
 
 	"github.com/prometheus/procfs"
@@ -38,6 +39,10 @@ func (m *LinuxMetrics) Collect() (*Metrics, error) {
 	metrics.SwapTotal = *memStats.SwapTotal
 	metrics.SwapFree = *memStats.SwapFree
 
+	disk := m.CollectDiskStats("/")
+
+	metrics.Disk = disk
+
 	return metrics, nil
 }
 
@@ -48,7 +53,7 @@ func (m *LinuxMetrics) CollectCPUUsage() (float64, error) {
 		return 0, err
 	}
 
-	time.Sleep(time.Second)
+	time.Sleep(100 * time.Millisecond)
 
 	stat2, err := m.procfs.Stat()
 	if err != nil {
@@ -61,7 +66,7 @@ func (m *LinuxMetrics) CollectCPUUsage() (float64, error) {
 	total := (cpu2.User + cpu2.Nice + cpu2.System + cpu2.Idle) - (cpu1.User + cpu1.Nice + cpu1.System + cpu1.Idle)
 	idle := cpu2.Idle - cpu1.Idle
 
-	usage := 100 * (1 - float64(idle)/float64(total))
+	usage := 100 * (1 - idle/total)
 	return usage, nil
 }
 
@@ -88,4 +93,16 @@ func (m *LinuxMetrics) StartCollecting(interval time.Duration) {
 
 		fmt.Printf("Collected Metrics: %+v\n", metrics)
 	}
+}
+
+func (m *LinuxMetrics) CollectDiskStats(path string) (disk DiskStatus) {
+	fs := syscall.Statfs_t{}
+	err := syscall.Statfs(path, &fs)
+	if err != nil {
+		return
+	}
+	disk.All = fs.Blocks * uint64(fs.Bsize)
+	disk.Free = fs.Bfree * uint64(fs.Bsize)
+	disk.Used = disk.All - disk.Free
+	return
 }
