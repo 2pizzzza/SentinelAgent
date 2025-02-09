@@ -1,6 +1,6 @@
-# sentinelAgent
+# SENTINEL
 
-**sentinelAgent** is a lightweight, fast, and efficient agent for monitoring Linux servers. It collects system metrics, monitors systemd units, gathers logs, and sends data via message brokers. The agent supports both **pull** and **push** models and is designed for easy deployment and high performance.
+**sentinel** is a lightweight, fast, and efficient agent for monitoring Linux servers. It collects system metrics, monitors systemd units, gathers logs, and sends data via message brokers. The agent supports both **pull** and **push** models and is designed for easy deployment and high performance.
 
 > **Note**: This project is still in development. Some features may be subject to changes, and certain functionality might not yet be fully implemented.
 
