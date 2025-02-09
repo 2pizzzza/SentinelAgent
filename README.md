@@ -16,6 +16,7 @@
 
 ## Project Structure
 
+```
 .
 ├── cmd
 │   └── sentinel
@@ -57,3 +58,4 @@
 │       └── sl
 │           └── sl.go
 └── README.md
+```
